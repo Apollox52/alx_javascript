@@ -1,22 +1,34 @@
 const request = require('request');
 const fs = require('fs');
 
-// Get the URL and file path from command line arguments
-const url = process.argv[2];
-const filePath = process.argv[3];
+// Define the URL for the API
+const apiUrl = process.argv[2];
 
-// Make a GET request to the URL
-request.get({ url: url, encoding: 'utf-8' }, (error, response, body) => {
+// Make a GET request to the API URL
+request(apiUrl, (error, response, body) => {
     if (error || response.statusCode !== 200) {
-        console.log('Error fetching webpage content');
+        console.log('Error fetching data from API');
     } else {
-        // Write the body response to the file
-        fs.writeFile(filePath, body, 'utf-8', (err) => {
-            if (err) {
-                console.log('Error writing to file');
-            } else {
-                console.log(`Content successfully saved to ${filePath}`);
+        // Parse the JSON response
+        const todos = JSON.parse(body);
+
+        // Initialize objects to store completed tasks for each user
+        const completedTasksByUser = {};
+
+        // Iterate over each todo item
+        todos.forEach(todo => {
+            // Check if the task is completed
+            if (todo.completed) {
+                // Increment the count of completed tasks for the user
+                if (completedTasksByUser[todo.userId]) {
+                    completedTasksByUser[todo.userId]++;
+                } else {
+                    completedTasksByUser[todo.userId] = 1;
+                }
             }
         });
+
+        // Print the number of completed tasks for each user
+        console.log(completedTasksByUser);
     }
 });
