@@ -1,45 +1,31 @@
 const request = require('request');
 
-// Define the URLs of the local servers
-const urls = [
-    'http://localhost:5050/route_0',
-    'http://localhost:5050/route_10'
-];
+// Get the API URL from the command line argument
+const apiUrl = process.argv[2];
 
-// Function to fetch content from a given URL
-function fetchContent(url) {
-    return new Promise((resolve, reject) => {
-        request(url, (error, response, body) => {
-            if (error || response.statusCode !== 200) {
-                reject(`Error fetching content from ${url}`);
-            } else {
-                resolve(body);
+// Character ID for Wedge Antilles
+const characterId = 18;
+
+// Make a GET request to the API URL
+request(apiUrl, (error, response, body) => {
+    if (error || response.statusCode !== 200) {
+        console.log('Error fetching data from API');
+    } else {
+        // Parse the JSON response
+        const films = JSON.parse(body);
+
+        // Initialize a counter for movies where Wedge Antilles is present
+        let count = 0;
+
+        // Iterate through each film
+        films.forEach(film => {
+            // Check if Wedge Antilles is present in the characters array of the film
+            if (film.characters.includes(`https://swapi-api.alx-tools.com/api/people/${characterId}/`)) {
+                count++;
             }
         });
-    });
-}
 
-// Function to determine the correct output based on the content size
-function determineOutput(content) {
-    if (!content) {
-        return 'empty text';
-    } else if (content.length <= 20) {
-        return 'small text';
-    } else {
-        return 'big text';
+        // Print the count of movies where Wedge Antilles is present
+        console.log(count);
     }
-}
-
-// Function to process each URL
-async function processURL(url) {
-    try {
-        const content = await fetchContent(url);
-        const output = determineOutput(content);
-        console.log(`Correct output - ${output} - ${url}`);
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-// Process each URL
-urls.forEach(processURL);
+});
