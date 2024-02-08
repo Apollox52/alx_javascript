@@ -1,42 +1,22 @@
 const request = require('request');
 const fs = require('fs');
 
-// Define the URLs
-const urls = [
-    "http://localhost:5050/route_0",
-    "http://localhost:5050/route_1",
-    "http://localhost:5050/route_2"
-];
+// Get the URL and file path from command line arguments
+const url = process.argv[2];
+const filePath = process.argv[3];
 
-// Function to handle the request for each URL
-function fetchContent(url, callback) {
-    request(url, (error, response, body) => {
-        if (error || response.statusCode !== 200) {
-            callback(null);
-        } else {
-            callback(body.trim());
-        }
-    });
-}
-
-// Function to determine the correct output based on the content
-function determineOutput(content) {
-    if (!content) {
-        return "empty text";
-    } else if (content.length <= 20) {
-        return "small text";
+// Make a GET request to the URL
+request.get({ url: url, encoding: 'utf-8' }, (error, response, body) => {
+    if (error || response.statusCode !== 200) {
+        console.log('Error fetching webpage content');
     } else {
-        return "big text";
+        // Write the body response to the file
+        fs.writeFile(filePath, body, 'utf-8', (err) => {
+            if (err) {
+                console.log('Error writing to file');
+            } else {
+                console.log(`Content successfully saved to ${filePath}`);
+            }
+        });
     }
-}
-
-// Function to process each URL
-function processURL(url) {
-    fetchContent(url, (content) => {
-        const output = determineOutput(content);
-        console.log(`Correct output - ${output} - ${url}`);
-    });
-}
-
-// Process each URL
-urls.forEach(processURL);
+});
