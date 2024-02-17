@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookie Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+
+    input {
+      margin-bottom: 10px;
+    }
+
+    button {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <label for="firstname">First Name:</label>
+  <input type="text" id="firstname">
+
+  <label for="email">Email:</label>
+  <input type="text" id="email">
+
+  <button onclick="setCookies()">Log me in</button>
+  <button onclick="showCookies()">Show the cookies</button>
+
+  <script>
+    function setCookies() {
+      var firstnameValue = document.getElementById('firstname').value;
+      var emailValue = document.getElementById('email').value;
+
+      document.cookie = "firstname=" + encodeURIComponent(firstnameValue);
+      document.cookie = "email=" + encodeURIComponent(emailValue);
+
+      alert("Cookies set successfully!");
+    }
+
+    function showCookies() {
+      var cookies = document.cookie;
+      var cookiesParagraph = document.createElement('p');
+      cookiesParagraph.innerHTML = "Cookies: " + cookies;
+
+      document.body.appendChild(cookiesParagraph);
+    }
+  </script>
+
+</body>
+</html>
