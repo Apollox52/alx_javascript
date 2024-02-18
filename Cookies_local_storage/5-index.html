@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      cursor: pointer;
+      margin: 5px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    p {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <script>
+    // Check if local storage is available
+    if (typeof(Storage) === "undefined") {
+      alert("Sorry, your browser does not support Web storage. Try again with a better one.");
+    } else {
+      // Array of available items
+      var availableItems = ["Shampoo", "Soap", "Sponge", "Water"];
+
+      // Function to add item to the cart in local storage
+      function addItemToCart(item) {
+        localStorage.setItem(item, true);
+        displayCart();
+      }
+
+      // Function to create the store and display available items
+      function createStore() {
+        var ul = document.createElement("ul");
+
+        // Loop through available items and create list items
+        for (var i = 0; i < availableItems.length; i++) {
+          var item = availableItems[i];
+          var li = document.createElement("li");
+          li.textContent = item;
+
+          // Add click event to each item to add it to the cart
+          li.addEventListener("click", function(event) {
+            addItemToCart(event.target.textContent);
+          });
+
+          ul.appendChild(li);
+        }
+
+        // Append the ul to the body
+        document.body.appendChild(ul);
+      }
+
+      // Function to display the cart information
+      function displayCart() {
+        var cartItemCount = 0;
+
+        // Count the number of items in the cart
+        for (var i = 0; i < availableItems.length; i++) {
+          var item = availableItems[i];
+          if (localStorage.getItem(item) === "true") {
+            cartItemCount++;
+          }
+        }
+
+        // Display cart information
+        var cartInfo = document.getElementById("cartInfo");
+        if (cartItemCount === 0) {
+          // If no items in the cart, remove cart info element
+          if (cartInfo) {
+            cartInfo.remove();
+          }
+        } else {
+          // If items in the cart, display cart info
+          if (!cartInfo) {
+            cartInfo = document.createElement("p");
+            cartInfo.id = "cartInfo";
+            document.body.appendChild(cartInfo);
+          }
+
+          cartInfo.textContent = "You previously had " + cartItemCount + " items in your cart";
+        }
+      }
+
+      // Initially create the store and display cart information
+      createStore();
+      displayCart();
+    }
+  </script>
+
+</body>
+</html>
